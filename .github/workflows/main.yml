@@ -1,14 +1,28 @@
-## NÃO ESTÁ PRONTO, VOU PRECISAR FAZER NO DIA 05/11 DEPOIS DO TRABALHO, ANTES DISSO NÃO VAI DAR :)
-name: Make (não pronto)
+# Tentei fazer rodar o terraform aqui no workflow, 
+# mas encontrei algumas dificuldades e o trabalho não me permitiu dar devida atenção à essa task, 
+# mas irei verificar em como prosseguir quando tiver tempo.
+
+name: Mensagens
 
 on:
   push:
-    branches: [main]   # roda quando o PR é mergeado na main
-  workflow_dispatch:    # permite rodar manualmente
+    branches: [ "main" ]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "Mensagem para imprimir"
+        required: false
+        default: "Build acionado"
 
 jobs:
-  run-make:
+  echo:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: make   # troque por "make" ou outro target se quiser
+      - name: Mensagem
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "${{ inputs.message }}"
+          else
+            echo "CI rodou no evento: ${{ github.event_name }} na ref: ${{ github.ref }}"
+          fi
